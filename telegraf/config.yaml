@@ -8,10 +8,6 @@ arch:
   - armv7
   - aarch64
   - amd64
-options:
-  config_path: "Hello world..."
-schema:
-  message: "str?"
 image: telegraf
 map:
   - config:ro
