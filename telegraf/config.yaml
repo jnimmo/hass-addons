@@ -16,7 +16,7 @@ schema:
       "enabled": "bool",
       "location": "str"
     }
-image: "telegraf"
+image: "docker.io/telegraf"
 map:
   - config:ro
 host_network: true
