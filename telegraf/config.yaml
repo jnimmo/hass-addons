@@ -1,7 +1,7 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Telegraf
 version: "0.0.1"
-slug: telegraf
+slug: "hass_telegraf"
 description: Run the Telegraf docker image on Home Assistant
 url: "https://github.com/jnimmo/hass-addons/telegraf"
 arch:
@@ -9,9 +9,14 @@ arch:
   - aarch64
   - amd64
 options:
-  config_path: "Hello world..."
+  custom_conf: {"enabled": true, "location": "/config/telegraf.conf"}
+  hostname: "homeassistant.local"
 schema:
-  message: "str?"
-image: telegraf
+  custom_conf: {
+      "enabled": "bool",
+      "location": "str"
+    }
+image: "sabuto/{arch}-hassio-telegraf"
 map:
   - config:ro
+host_network: true
