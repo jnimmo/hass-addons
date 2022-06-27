@@ -9,6 +9,8 @@ arch:
   - amd64
 ports:
   5006/tcp: 5006
+ports_description:
+  5006/tcp: "Actual Budget web interface"
 panel_icon: mdi:currency-usd
 init: false
 image: jlongster/actual-server
