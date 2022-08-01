@@ -1,7 +1,7 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: "Actual Budget (Dev)"
 version: "sha-0d171d2-alpine"
-slug: actualbudget
+slug: actualbudget-dev
 description: "A local-first personal finance tool"
 url: "https://github.com/actualbudget/actual-server"
 arch:
