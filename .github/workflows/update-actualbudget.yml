@@ -19,15 +19,15 @@ jobs:
         
       - name: Get latest release tag
         run: |
-          release_tag=$(curl -s https://api.github.com/repos/actualbudget/actual-server/releases/latest | jq -r '.tag_name' | cut -d 'v' -f 2)
+          latest_version=$(curl -s https://api.github.com/repos/actualbudget/actual-server/releases/latest | jq -r '.tag_name' | cut -d 'v' -f 2)
       
       - name: Update version in YAML file
         run: |
-          current_version=$(grep -Po '(?<=version: ")[0-9]+\.[0-9]+\.[0-9]+' actualbudget/config.yaml)
-          if [[ "$release_tag" != "$current_version" ]]; then
-            sed -i "s/$current_version/$release_tag/g" actualbudget/config.yaml
+          current_version=$(grep -Po '(?<=version: ")[0-9\.]+' actualbudget/config.yaml)
+          if [[ "$latest_version" != "$current_version" ]]; then
+            sed -i "s/$current_version/$latest_version/g" actualbudget/config.yaml
             git config --global user.email "github-actions@github.com"
             git config --global user.name "Github Actions"
-            git commit -am "Update version to $release_tag"
+            git commit -am "Update version to $latest_version"
             git push
           fi
