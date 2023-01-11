@@ -1,0 +1,30 @@
+name: Trigger rebuild from external branch
+on:
+  schedule:
+    # Once a day.
+    - cron: '0 0 * * *'
+  # allow manual trigger
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check-actualbudget-version:
+    name: Check Actual Budget version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Get latest release tag and update YAML file
+        run: |
+          latest_version=$(curl -s https://api.github.com/repos/actualbudget/actual-server/tags | jq -r '.[0].name' | cut -d 'v' -f 2)
+          current_version=$(grep -Po '(?<=version: ")[0-9\.]+' actualbudget/config.yaml)
+          if [[ "$latest_version" != "$current_version" ]]; then
+            sed -i "s/version:.*/version: \"$latest_version-alpine\"/g" actualbudget/config.yaml
+            git config --global user.email "github-actions@github.com"
+            git config --global user.name "Github Actions"
+            git commit -am "Update version to v$latest_version"
+            git push
+          fi
