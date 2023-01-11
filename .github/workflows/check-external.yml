@@ -1,0 +1,45 @@
+name: Trigger rebuild from external branch
+on:
+  schedule:
+    # Once a day.
+    - cron: '0 0 * * *'
+  # allow manual trigger
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check-actualbudget-version:
+    name: Check Actual Budget version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check latest Actual Server release
+        uses: octokit/request-action@v2.x
+        id: get_release
+        with:
+          route: GET /repos/:owner/:repo/releases/latest
+          owner: actualbudget
+          repo: actual-server
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Save Actual Budget server latest release
+        run: echo "${{ fromJson(steps.get_release.outputs.data).tag_name }}" | tee actualserver.txt
+      - name: Cache release
+        uses: actions/cache@v2
+        id: cache_release
+        with:
+          path: actualserver.txt
+          key: commit-cache-${{ fromJson(steps.get_release.outputs.data).tag_name}}
+      - name: Debug cache
+        if: steps.cache_release.outputs.cache-hit != 'true'
+        run: echo "New Actual Server release - ${{ fromJson(steps.get_release.outputs.data).tag_name }}"
+    outputs:
+      cache-hit: ${{ steps.cache_release.outputs.cache-hit }}
+  update-actual-server-version:
+    name: Update Actual Budget version
+    needs: check-actualbudget-version
+    if: needs.check-actualbudget-version.outputs.cache-hit != 'true'
+    permissions:
+      contents: write
+    uses: ./.github/workflows/update-actualbudget.yml
