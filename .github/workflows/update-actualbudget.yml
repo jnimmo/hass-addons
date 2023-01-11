@@ -19,7 +19,7 @@ jobs:
         
       - name: Get latest release tag
         run: |
-          latest_version=$(curl -s https://api.github.com/repos/actualbudget/actual-server/releases/latest | jq -r '.tag_name' | cut -d 'v' -f 2)
+          latest_version=$(curl -s https://api.github.com/repos/actualbudget/actual-server/tags | jq -r '.[0].name' | cut -d 'v' -f 2)
       
       - name: Update version in YAML file
         run: |
