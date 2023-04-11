@@ -13,5 +13,5 @@ ports_description:
   5006/tcp: "Actual Budget web interface"
 panel_icon: mdi:currency-usd
 init: false
-image: jlongster/actual-server
+image: actualbudget/actual-server
 webui: "http://[HOST]:[PORT:5006]"
