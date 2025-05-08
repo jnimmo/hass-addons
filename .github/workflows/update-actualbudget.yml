@@ -15,11 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
         
       - name: Get latest release tag and update YAML file
         run: |
-          latest_version=$(curl -s https://api.github.com/repos/actualbudget/actual-server/tags | jq -r '.[0].name' | cut -d 'v' -f 2)
+          latest_version=$(curl -s https://api.github.com/repos/actualbudget/actual/tags | jq -r '.[0].name' | cut -d 'v' -f 2)
           current_version=$(grep -Po '(?<=version: ")[0-9\.]+' actualbudget/config.yaml)
           if [[ "$latest_version" != "$current_version" ]]; then
             sed -i "s/version:.*/version: \"$latest_version-alpine\"/g" actualbudget/config.yaml
